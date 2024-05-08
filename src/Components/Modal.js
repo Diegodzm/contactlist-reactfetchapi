@@ -6,11 +6,14 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Context } from '../store/Context';
 
 function DeleteModal(props) {
-  const {actions}= useContext(Context)
+  const {actions,store}= useContext(Context)
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const borrarContact=() =>{
+    const idDel=store.listOfContacts[props.index].id 
+    console.log(idDel)
+    actions.delContact(idDel)
     actions.quitarContacto(props.index)
     handleClose()
   }

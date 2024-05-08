@@ -1,14 +1,15 @@
+
+
 export const getState = ({ getActions, getStore, setStore }) => {
-    const contact = {}
     return {
         store: {
             contact: {
 
-                Fullname: "",
-                Email: "",
-                Phone: 0,
-                Address: "",
-                index: null
+                name: "",
+                phone: "",
+                email: "",
+                address: ""
+               
             },
 
         listOfContacts: [],
@@ -19,6 +20,8 @@ export const getState = ({ getActions, getStore, setStore }) => {
                 const {listOfContacts,contact}=getStore()
                 listOfContacts[index]= contact
                 setStore({listOfContacts})
+  
+                
             },
             setEdit:(value)=>{
                 setStore({edit:value})
@@ -34,32 +37,110 @@ export const getState = ({ getActions, getStore, setStore }) => {
                 contact[name]= value
                 setStore(contact);
                 console.log(getStore().contact)
+
             },
        
             handleOnSubmit: (event) => {
                 const  store  = getStore();
                 event.preventDefault();
-                setStore({
+                  setStore({
                     contact: {
 
-                        Fullname: "",
-                        Email: "",
-                        Phone: 0,
-                        Address: "",
+                        name: "",
+                        email: "",
+                        phone: "",
+                        address: "",
                     },
                      listOfContacts: [...store.listOfContacts,{...store.contact}]
-                    })                   
+                     
+                  
+                    })      
+                          
             },
+
             quitarContacto(index){
                 const  store  = getStore();
                 store.listOfContacts.splice(index,1)
                 setStore({listOfContacts:store.listOfContacts})
+            },
+            createAgenda(){ 
+               
+                fetch('https://playground.4geeks.com/contact/agendas/Agendadzm', {
+                    method: "POST",
+                    body:JSON.stringify(),
+                    headers: {
+                     "Content-Type": "application/json"
+                   }
+             
+                  }).then(response=>response.json())
+                  .then(data =>getStore.listOfContacts=data)
+                  .catch(error=>console.log(error))
+              },
+            createContact(contact){
+                const store= getStore
+                console.log(contact)
+                fetch('https://playground.4geeks.com/contact/agendas/Agendadzm/contacts', {
+                    method: "POST",
+                    body:JSON.stringify(contact),
+                    headers: {
+                     "Content-Type": "application/json"
+                   }
+             
+                  }).then(data =>console.log(data))
+                  .catch(error=>console.log(error))
 
             },
+          
+            getAgenda(){      
+                const store= getStore()
+                
+                fetch('https://playground.4geeks.com/contact/agendas/Agendadzm/contacts', {
+                    method: "GET",
+                    headers: {
+                     "Content-Type": "application/json"
+                   }
+             
+                  }).then(response=>response.json())
+                  .then(data =>setStore({listOfContacts:[...data.contacts]}))
+                  .catch(error=>console.log("error"))
+                  console.log(store.listOfContacts)
+  
+  
 
-            modificarContacto(event,index){
-              
+              },
+            updateContact(contact,id){
+
+                fetch('https://playground.4geeks.com/contact/agendas/Agendadzm/contacts/'+id, {
+                    method: "PUT",
+                    body:JSON.stringify(contact),
+                    headers: {
+                     "Content-Type": "application/json"
+                   }
+             
+                  }).then(response=>response.json())
+                  .then(data =>console.log(data))
+                  .catch(error=>console.log("error"))
+          
+    
+            },
+            delContact(id){
+
+                fetch('https://playground.4geeks.com/contact/agendas/Agendadzm/contacts/'+id, {
+                    method: "DELETE",
+                    headers: {
+                     "Content-Type": "application/json"
+                   }
+             
+                  }).then(response=>response.json())
+                  .then(data =>console.log(data))
+                  .catch(error=>console.log("error"))
+          
+    
             }
+            
+     
+               
+             
 
         }
     }
